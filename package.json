@@ -1,0 +1,111 @@
+{
+  "name": "mp3-bulk-compressor-desktop",
+  "productName": "MP3 Bulk Compressor Desktop",
+  "version": "1.0.0",
+  "description": "Shrink MP3 files in bulk on macOS and Windows. Re-encodes with LAME, verifies every file, and never overwrites an original.",
+  "author": "tdeletto",
+  "license": "MIT",
+  "homepage": "https://github.com/tdeletto/MP3-Bulk-Compressor-Desktop",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tdeletto/MP3-Bulk-Compressor-Desktop.git"
+  },
+  "main": "src/main/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build:engine": "bash scripts/build-engine.sh",
+    "build:icon": "swift scripts/make-icon.swift build/icon.png",
+    "fixtures": "python3 scripts/make-fixtures.py",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node test/e2e/app.e2e.js",
+    "dist:mac": "electron-builder --mac --arm64 && electron-builder --mac --x64",
+    "dist:win": "electron-builder --win --x64 && electron-builder --win --arm64"
+  },
+  "devDependencies": {
+    "electron": "^44.3.0",
+    "electron-builder": "^26.15.3",
+    "playwright-core": "^1.63.0"
+  },
+  "build": {
+    "appId": "com.tdeletto.mp3bulkcompressordesktop",
+    "productName": "MP3 Bulk Compressor Desktop",
+    "copyright": "Copyright © 2026 tdeletto",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "LICENSE",
+        "to": "licenses/MP3-Bulk-Compressor-Desktop-MIT.txt"
+      },
+      {
+        "from": "engine/third_party/lame/COPYING",
+        "to": "licenses/LAME-LGPL.txt"
+      },
+      {
+        "from": "engine/third_party/minimp3/LICENSE",
+        "to": "licenses/minimp3-CC0.txt"
+      }
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "icon": "build/icon.png",
+      "identity": "-",
+      "hardenedRuntime": false,
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "fileAssociations": [
+        {
+          "ext": "mp3",
+          "name": "MP3 Audio",
+          "role": "Viewer",
+          "rank": "Alternate"
+        }
+      ],
+      "artifactName": "MP3-Bulk-Compressor-Desktop-${version}-mac-${arch}.${ext}",
+      "extraResources": [
+        {
+          "from": "resources/engine/darwin-${arch}",
+          "to": "engine"
+        }
+      ]
+    },
+    "dmg": {
+      "artifactName": "MP3-Bulk-Compressor-Desktop-${version}-mac-${arch}.${ext}",
+      "title": "MP3 Bulk Compressor Desktop ${version}"
+    },
+    "win": {
+      "icon": "build/icon.png",
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "extraResources": [
+        {
+          "from": "resources/engine/win32-${arch}",
+          "to": "engine"
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "MP3 Bulk Compressor Desktop",
+      "artifactName": "MP3-Bulk-Compressor-Desktop-Setup-${version}-win-${arch}.${ext}"
+    },
+    "portable": {
+      "artifactName": "MP3-Bulk-Compressor-Desktop-Portable-${version}-win-${arch}.${ext}"
+    }
+  }
+}

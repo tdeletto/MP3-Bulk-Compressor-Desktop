@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <title>MP3 Bulk Compressor Desktop</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Shared icon set, referenced with <use href="#i-…"> -->
+  <svg class="sprite" aria-hidden="true">
+    <symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><circle cx="10.5" cy="16.5" r="1.8"/><path d="M12.3 16.5V11l2.7 1"/></symbol>
+    <symbol id="i-library" viewBox="0 0 24 24"><rect x="7" y="3" width="14" height="14" rx="2"/><path d="M3 7v12a2 2 0 0 0 2 2h12"/><circle cx="12.5" cy="12.5" r="1.8"/><path d="M14.3 12.5V7l2.7 1"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M10 4l1.6 4.4L16 10l-4.4 1.6L10 16l-1.6-4.4L4 10l4.4-1.6z"/><path d="M18 14l.8 2.2L21 17l-2.2.8L18 20l-.8-2.2L15 17l2.2-.8z"/></symbol>
+    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/></symbol>
+    <symbol id="i-output" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></symbol>
+    <symbol id="i-podcast" viewBox="0 0 24 24"><circle cx="12" cy="11" r="2"/><path d="M12 13v8M8.5 14.5a5 5 0 1 1 7 0M5.6 17.4a9 9 0 1 1 12.8 0"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><circle cx="8" cy="17" r="3"/><path d="M11 17V4h7v4h-7"/></symbol>
+    <symbol id="i-compress" viewBox="0 0 24 24"><path d="M12 3v6M9 6l3 3 3-3M12 21v-6M9 18l3-3 3 3M4 12h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></symbol>
+    <symbol id="i-log" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+    <symbol id="i-reveal" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></symbol>
+  </svg>
+
+  <header class="titlebar">
+    <div class="titlebar-text">
+      <h1>MP3 Bulk Compressor Desktop</h1>
+      <p id="subtitle">Keep original settings</p>
+    </div>
+  </header>
+
+  <!-- ===================== Setup ===================== -->
+  <main id="setup-view" class="setup">
+    <div class="column">
+      <section class="card" id="source-card" aria-labelledby="source-title">
+        <div class="card-head">
+          <svg class="icon"><use href="#i-library"/></svg>
+          <h2 id="source-title">Source</h2>
+          <button id="clear-source" class="icon-button" title="Clear selection" hidden><svg class="icon"><use href="#i-close"/></svg></button>
+        </div>
+
+        <div id="drop-zone" class="drop-zone">
+          <svg class="icon large" id="source-icon"><use href="#i-folder"/></svg>
+          <div class="drop-text">
+            <div id="source-name" class="source-name">Drop MP3s or folders here</div>
+            <div id="source-summary" class="muted">or choose below</div>
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="pick-folder" class="button tonal"><svg class="icon"><use href="#i-folder"/></svg>Select Folder</button>
+          <button id="pick-files" class="button outlined"><svg class="icon"><use href="#i-file"/></svg>Select Files</button>
+        </div>
+
+        <label class="switch-row">
+          <input type="checkbox" id="recursive">
+          <span class="switch" aria-hidden="true"></span>
+          <span>Include all subfolders</span>
+        </label>
+
+        <details id="file-details" class="file-details" hidden>
+          <summary>Show files</summary>
+          <ul id="file-list" class="file-list"></ul>
+        </details>
+      </section>
+
+      <section class="card" aria-labelledby="presets-title">
+        <div class="card-head">
+          <svg class="icon"><use href="#i-sparkle"/></svg>
+          <h2 id="presets-title">Presets</h2>
+        </div>
+        <div class="presets" id="presets">
+          <button class="preset" data-preset="ORIGINAL"><svg class="icon"><use href="#i-history"/></svg><strong>Keep original</strong><span>No changes</span></button>
+          <button class="preset" data-preset="PODCAST"><svg class="icon"><use href="#i-podcast"/></svg><strong>Podcast</strong><span>VBR 64 · mono</span></button>
+          <button class="preset" data-preset="HQ_MUSIC"><svg class="icon"><use href="#i-note"/></svg><strong>HQ Music</strong><span>V0 · stereo</span></button>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="output-title">
+        <div class="card-head">
+          <svg class="icon"><use href="#i-output"/></svg>
+          <h2 id="output-title">Output</h2>
+        </div>
+        <div class="options">
+          <label class="option">
+            <input type="radio" name="output" id="output-copy" value="copy" checked>
+            <span><strong>Keep original, save a copy</strong><span class="muted">Saves “name - SHRUNK.mp3” next to each original.</span></span>
+          </label>
+          <label class="option">
+            <input type="radio" name="output" id="output-replace" value="replace">
+            <span><strong>Replace original</strong><span class="muted" id="replace-detail">Moves the original to the Trash after the new file is verified, then gives the new file the original name.</span></span>
+          </label>
+        </div>
+      </section>
+    </div>
+
+    <div class="column">
+      <section class="card" aria-labelledby="settings-title">
+        <div class="card-head">
+          <svg class="icon"><use href="#i-sliders"/></svg>
+          <h2 id="settings-title">Settings</h2>
+        </div>
+        <div id="settings-groups"></div>
+        <details class="rules">
+          <summary><svg class="icon"><use href="#i-shield"/></svg>Rules applied to every file</summary>
+          <ul>
+            <li><strong>Bitrate is never raised.</strong> A file already at or below the chosen bitrate keeps its own bitrate; the other settings still apply.</li>
+            <li><strong>Nothing is upsampled</strong>, and a mono file stays mono.</li>
+            <li><strong>Files that wouldn't get smaller are skipped</strong>, as are files where no setting would change anything.</li>
+            <li><strong>Tags and cover art are kept</strong>, copied byte for byte.</li>
+            <li>Every new file is decoded end to end and checked, then written and read back, before an original is touched. Originals are never overwritten.</li>
+            <li>In VBR mode a bitrate is a target mapped to a LAME quality level (V0–V9), so actual size depends on the audio.</li>
+          </ul>
+        </details>
+      </section>
+    </div>
+  </main>
+
+  <!-- ===================== Run ===================== -->
+  <main id="run-view" class="run" hidden>
+    <section class="card progress-card">
+      <div class="progress-top">
+        <div id="run-percent" class="percent">0%</div>
+        <div id="run-count" class="count">0 of 0</div>
+      </div>
+      <div class="bar"><div id="run-bar" class="bar-fill"></div></div>
+      <div class="stats">
+        <div><strong id="stat-saved">0 B</strong><span>Saved</span></div>
+        <div><strong id="stat-compressed">0</strong><span>Compressed</span></div>
+        <div><strong id="stat-skipped">0</strong><span>Skipped</span></div>
+        <div><strong id="stat-failed">0</strong><span>Failed</span></div>
+      </div>
+      <div id="run-status" class="muted">Starting…</div>
+    </section>
+
+    <section id="active-list" class="active-list"></section>
+    <ul id="results" class="results"></ul>
+
+    <section class="card log-card">
+      <div class="card-head">
+        <svg class="icon"><use href="#i-log"/></svg>
+        <h2>Log <span id="log-count" class="muted"></span></h2>
+        <button id="copy-log" class="text-button" hidden>Copy</button>
+        <button id="log-toggle" class="text-button">Show</button>
+      </div>
+      <ol id="log" class="log" hidden></ol>
+    </section>
+  </main>
+
+  <footer class="actionbar">
+    <div id="action-hint" class="muted"></div>
+    <button id="compress" class="button primary" disabled><svg class="icon"><use href="#i-compress"/></svg><span id="compress-label">Compress</span></button>
+    <button id="stop" class="button danger" hidden><svg class="icon"><use href="#i-stop"/></svg>Stop</button>
+    <button id="done" class="button primary" hidden><svg class="icon"><use href="#i-check"/></svg>Done</button>
+  </footer>
+
+  <div id="drop-overlay" class="drop-overlay" hidden><div>Drop to add MP3s</div></div>
+
+  <dialog id="confirm-replace" class="confirm">
+    <form method="dialog">
+      <h3>Replace originals?</h3>
+      <p id="confirm-text">Each original is moved to the Trash only after its new file has been verified. You can restore originals from the Trash.</p>
+      <div class="button-row end">
+        <button value="cancel" class="button outlined">Cancel</button>
+        <button value="ok" id="confirm-ok" class="button primary">Compress and Replace</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="../core/settings.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

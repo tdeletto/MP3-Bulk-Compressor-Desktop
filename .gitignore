@@ -1,0 +1,11 @@
+# Dependencies and build output
+node_modules/
+dist/
+resources/engine/
+
+# OS / editor clutter
+.DS_Store
+Thumbs.db
+*.log
+.vscode/
+.idea/
