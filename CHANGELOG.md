@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.1 (2026-09-13)
+
+- Release builds: installers are now attached to the GitHub Release. The 1.0.0 tag's automated build failed at packaging (electron-builder tried to publish on its own without a token), so 1.0.1 is the first release with downloadable installers. No changes to the app itself.
+
 ## 1.0.0 (2026-09-13)
 
 First release of MP3 Bulk Compressor Desktop for macOS and Windows, ported from the Android app (v2.0).

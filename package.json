@@ -1,7 +1,7 @@
 {
   "name": "mp3-bulk-compressor-desktop",
   "productName": "MP3 Bulk Compressor Desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Shrink MP3 files in bulk on macOS and Windows. Re-encodes with LAME, verifies every file, and never overwrites an original.",
   "author": "tdeletto",
   "license": "MIT",
@@ -19,8 +19,8 @@
     "fixtures": "python3 scripts/make-fixtures.py",
     "test": "node --test test/*.test.js",
     "test:e2e": "node test/e2e/app.e2e.js",
-    "dist:mac": "electron-builder --mac --arm64 && electron-builder --mac --x64",
-    "dist:win": "electron-builder --win --x64 && electron-builder --win --arm64"
+    "dist:mac": "electron-builder --mac --arm64 --publish never && electron-builder --mac --x64 --publish never",
+    "dist:win": "electron-builder --win --x64 --publish never && electron-builder --win --arm64 --publish never"
   },
   "devDependencies": {
     "electron": "^44.3.0",
